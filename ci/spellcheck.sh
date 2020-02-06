@@ -58,12 +58,12 @@ if [[ ! -f "$dict_filename" ]]; then
     echo "Scanning files to generate dictionary file '$dict_filename'."
     echo "Please check that it doesn't contain any misspellings."
 
-    echo "personal_ws-1.1 en 0 utf-8" > "$dict_filename"
-    cat "${markdown_sources[@]}" | aspell --ignore 3 list | sort -u >> "$dict_filename"
+    echo "personal_ws-1.1 pt_BR 0 utf-8" > "$dict_filename"
+    cat "${markdown_sources[@]}" | aspell --lang pt_BR --ignore 3 list | sort -u >> "$dict_filename"
+
 elif [[ "$mode" == "list" ]]; then
     # List (default) mode: scan all files, report errors.
     declare -i retval=0
-
     cp "$dict_filename" "$dict_path"
 
     if [ ! -f $dict_path ]; then
@@ -72,11 +72,12 @@ elif [[ "$mode" == "list" ]]; then
     fi
 
     for fname in "${markdown_sources[@]}"; do
-        command=$(aspell --ignore 3 --personal="$dict_path" "$mode" < "$fname")
+        command=$(aspell --lang pt_BR --ignore 3 --personal="$dict_path" "$mode" < "$fname")
+
         if [[ -n "$command" ]]; then
             for error in $command; do
                 # FIXME: find more correct way to get line number
-                # (ideally from aspell). Now it can make some false positives,
+                # (ideally from aspell pt_BR). Now it can make some false positives,
                 # because it is just a grep.
                 grep --with-filename --line-number --color=always "$error" "$fname"
             done
@@ -94,6 +95,6 @@ elif [[ "$mode" == "check" ]]; then
     fi
 
     for fname in "${markdown_sources[@]}"; do
-        aspell --ignore 3 --dont-backup --personal="$dict_path" "$mode" "$fname"
+        aspell --lang pt_BR --ignore 3 --dont-backup --personal="$dict_path" "$mode" "$fname"
     done
 fi

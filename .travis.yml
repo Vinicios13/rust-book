@@ -11,7 +11,7 @@ addons:
   apt:
     packages:
       - aspell
-      - aspell-en
+      - aspell-pt-br
 before_script:
   - (cargo install mdbook --vers 0.3.5 --force || true)
 script:
